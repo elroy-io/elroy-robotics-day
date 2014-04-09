@@ -1,4 +1,5 @@
 var ArduinoFirmata = require('arduino-firmata');
+var throttleEvent = require('throttle-event');
 
 var ButtonDriver = module.exports = function() {
   this.type = 'button';
@@ -13,7 +14,7 @@ var ButtonDriver = module.exports = function() {
   this._board.on('connect', function() {
     console.log('connected');
     self._board.pinMode(2, ArduinoFirmata.INPUT);
-    self._board.on('digitalChange', function(e) {
+    self._board.on('digitalChange', throttleEvent(20,function(e) {
       if (!self._pressEmitter || e.pin !== 2) {
         return;
       }
@@ -23,7 +24,7 @@ var ButtonDriver = module.exports = function() {
       } else if (e.value === false) {
         self.call('lift');
       }
-    });
+    }));
   });
 };
 

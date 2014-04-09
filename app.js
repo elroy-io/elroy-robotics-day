@@ -22,6 +22,39 @@ ClumsyBird.prototype.init = function(elroy) {
 
 
   elroy
+     .observe('type="button"')
+     .zip(elroy.observe('type="ardrone"'))
+     .subscribe(function(devices){
+       var button = devices[0];
+       var ardrone = devices[1];
+       
+       var timer = null;
+       var count  = 0;
+       var duration = ardrone.data.movementTime;
+
+       button.on('press',function(){
+
+	 if(ardrone.state === 'landed'){
+	   ardrone.call('take-off');
+	 }else{
+	   ardrone.call('up');
+	   count++;
+
+	   if(timer !== null)
+	     clearTimeout(timer);
+
+	   timer = setTimeout(function(){
+	     ardrone.call('timed-down',count*duration*0.7,cb);
+	     count = 0;
+	   },duration);	   
+	 }
+
+	 
+       });
+     });
+  
+
+  elroy
      .observe('type="huebulb"')
      .zip(elroy.observe('type="photosensor"'))
      .subscribe(function(devices){
