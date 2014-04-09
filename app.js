@@ -17,9 +17,30 @@ ClumsyBird.prototype.init = function(elroy) {
       sphero.call('move', 5, cb);
       hue.call('blink');
       watch.call('sms', 'Pebble', 'Hello world!', cb);
-      elroy.expose(sphero);
-      elroy.expose(button);
-      elroy.expose(hue);
     });
   });
+
+
+  elroy
+     .observe('type="huebulb"')
+     .zip(elroy.observe('type="photosensor"'))
+     .subscribe(function(devices){
+       var bulb = devices[0];
+       var sensor = devices[1];
+
+       bulb.call('turn-off');
+       sensor.on('update',function(val){
+	 if(val < 900 && bulb.state !== 'off'){
+	   bulb.call('turn-off');
+	 }else if(val > 900 && bulb.state !== 'on'){
+	   bulb.call('turn-on');
+	 }
+       });
+     });
+
+
+  elroy.on('deviceready',function(device){
+    elroy.expose(device);
+  });
+
 };
