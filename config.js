@@ -8,8 +8,8 @@ var GlassScout = require('elroy-glass-driver');
 module.exports = function(runtime) {
 //  runtime.scouts.push(SpheroScout);
   runtime.scouts.push(HueScout);
-//  runtime.scouts.push(PebbleScout);
-//  runtime.scouts.push(PhotosensorScout);
+  runtime.scouts.push(PebbleScout);
+  runtime.scouts.push(PhotosensorScout);
   runtime.scouts.push(ArdroneScout);
   runtime.scouts.push(GlassScout);
 };
