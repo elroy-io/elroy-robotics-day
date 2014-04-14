@@ -1,25 +1,25 @@
 {
-  "name": "elroy-robotics-day",
+  "name": "zetta-robotics-day",
   "version": "0.0.0",
-  "description": "",
+  "description": "Zetta demo for Michigan Robotics Day",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mdobson/elroy-robotics-day.git"
+    "url": "https://github.com/zettajs/zetta-robotics-day.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mdobson/elroy-robotics-day/issues"
+    "url": "https://github.com/zettajs/zetta-robotics-day/issues"
   },
-  "homepage": "https://github.com/mdobson/elroy-robotics-day",
+  "homepage": "https://github.com/zettajs/zetta-robotics-day",
   "dependencies": {
-    "elroy-pebble-driver": "0.0.7",
-    "elroy-hue-driver": "0.0.4",
-    "elroy-sphero-driver": "0.0.6",
+    "zetta-pebble-driver": "0.0.7",
+    "zetta-hue-driver": "0.0.4",
+    "zetta-sphero-driver": "0.0.6",
     "arduino-firmata": "^0.3.0"
   }
 }

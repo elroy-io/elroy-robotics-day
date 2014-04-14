@@ -4,62 +4,87 @@ var ClumsyBird = module.exports = function() {
 
 var cb = function(){};
 
-ClumsyBird.prototype.init = function(elroy) {
-  elroy.observe('type="button"')
-  .zip(elroy.observe('type="ardrone"'),elroy.observe('type="huehub"'),elroy.observe('type="smartwatch"'))
+ClumsyBird.prototype.init = function(zetta) {
+  zetta.observe('type="button"')
+  .zip(zetta.observe('type="ardrone"')
+      ,zetta.observe('type="huehub"')
+      ,zetta.observe('type="smartwatch"'))
   .subscribe(function(devices) {
+    
+    console.log('Devices Ready')
+    
     var button = devices[0];
     var ardrone = devices[1];
     var hue = devices[2];
     var watch = devices[3];
-
-    var timer = null;
-    var count  = 0;
-    var duration = ardrone.data.movementTime;
-
+    
+    // ardrone climb
+    var droneLift = new ArDroneLift(ardrone);
+    
     button.on('press', function() {
-//      sphero.call('move', 5, cb);
       hue.call('blink');
-      watch.call('sms', 'Pebble', 'Hello world!', cb);
-
-      if(ardrone.state === 'landed'){
-	ardrone.call('take-off');
-      }else{
-	ardrone.call('up');
-	count++;
-
-	if(timer !== null)
-	  clearTimeout(timer);
-
-	timer = setTimeout(function(){
-	  ardrone.call('timed-down',count*duration*0.7,cb);
-	  count = 0;
-	},duration);	   
-      }
-
+      watch.call('sms', 'Pebble', 'Hello potato!', cb);
+//      droneLift.goUp();
     });
   });
 
-  elroy
+
+
+
+  zetta
     .observe('type="huebulb"')
-    .zip(elroy.observe('type="photosensor"'))
+    .zip(zetta.observe('type="photosensor"'))
     .subscribe(function(devices){
       var bulb = devices[0];
       var sensor = devices[1];
 
       bulb.call('turn-off');
       sensor.on('update',function(val){
-	if(val < 900 && bulb.state !== 'off'){
-	  bulb.call('turn-off');
-	}else if(val > 900 && bulb.state !== 'on'){
-	  bulb.call('turn-on');
-	}
+      	if(val < 900 && bulb.state !== 'off'){
+      	  bulb.call('turn-off');
+      	}else if(val > 900 && bulb.state !== 'on'){
+      	  bulb.call('turn-on');
+      	}
       });
     });
 
 
-  elroy.on('deviceready',function(device){
-    elroy.expose(device);
+
+
+  zetta.on('deviceready',function(device){
+    zetta.expose(device);
   });
 
 };
+
+
+
+function ArDroneLift(ardrone){
+  this.timer = null;
+  this.count  = 0;
+  this.duration = ardrone.data.movementTime;
+  this.ardrone = ardrone;
+};
+
+ArDroneLift.prototype.goUp = function(){
+  var self = this;
+  if(this.ardrone.state === 'landed'){
+    this.ardrone.call('take-off');
+  }else{
+    this.ardrone.call('up');
+    self.count++;
+
+    if(this.timer !== null)
+      clearTimeout(this.timer);
+
+    this.timer = setTimeout(function(){
+      self.ardrone.call('timed-down',self.count*self.duration*0.7,cb);
+      self.count = 0;
+    },self.duration); 
+  }
+};
+
+
+process.on('uncaughtException',function(err){
+  console.log('oops:',err);
+});
